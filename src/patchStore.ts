@@ -37,6 +37,8 @@ export class PatchStore implements vscode.Disposable {
   private readonly disposables: vscode.Disposable[] = [];
   private pending: ReturnType<typeof setTimeout> | undefined;
   private loading: Promise<void> | undefined;
+  /** A reload waiting for the current load to finish. */
+  private queued: Promise<void> | undefined;
 
   private readonly changeEmitter = new vscode.EventEmitter<void>();
   /** Fired when patches are added/removed/changed or a targeted file changes. */
@@ -78,8 +80,20 @@ export class PatchStore implements vscode.Disposable {
   }
 
   reload(): Promise<void> {
-    this.loading = this.load();
-    return this.loading;
+    // Loads must not overlap: each replaces the shared watchers and entries
+    // across `await`s. Queue behind the running load, and let reloads requested
+    // while one is already queued share it.
+    if (!this.queued) {
+      const queued = (this.loading ?? Promise.resolve())
+        .catch(() => undefined)
+        .then(() => {
+          this.queued = undefined;
+          return this.load();
+        });
+      this.queued = queued;
+      this.loading = queued;
+    }
+    return this.queued;
   }
 
   /** Workspace URI of the file a patch entry targets. */
@@ -110,18 +124,31 @@ export class PatchStore implements vscode.Disposable {
     let result = this.previews.get(key);
     if (!result) {
       const source = this.sourceUri(entry, file);
-      const sourceKey = source.toString();
-      let dependents = this.targets.get(sourceKey);
-      if (!dependents) {
-        dependents = new Set();
-        this.targets.set(sourceKey, dependents);
-      }
-      dependents.add(key);
       const fuzz = getConfig(entry.folder).fuzzFactor;
-      result = readText(source).then((text) => computePreview(file, text, fuzz));
+      this.track(source, key);
+      if (file.kind === 'rename') {
+        // An applied rename is recognised by the new file, so it is a dependency too.
+        const target = this.targetUri(entry, file);
+        this.track(target, key);
+        result = Promise.all([readText(source), readText(target)]).then(([text, renamed]) =>
+          computePreview(file, text, fuzz, renamed),
+        );
+      } else {
+        result = readText(source).then((text) => computePreview(file, text, fuzz));
+      }
       this.previews.set(key, result);
     }
     return result;
+  }
+
+  /** Record that the preview `key` depends on the content of `uri`. */
+  private track(uri: vscode.Uri, key: string): void {
+    let dependents = this.targets.get(uri.toString());
+    if (!dependents) {
+      dependents = new Set();
+      this.targets.set(uri.toString(), dependents);
+    }
+    dependents.add(key);
   }
 
   private async load(): Promise<void> {
