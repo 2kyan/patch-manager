@@ -1,0 +1,221 @@
+{
+  "name": "patch-manager",
+  "displayName": "Patch Manager",
+  "description": "Browse patch files in the workspace as a tree and preview their changes as diffs without applying them.",
+  "version": "0.1.0",
+  "publisher": "2kyan",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/2kyan/patch-manager" },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:**/*.patch",
+    "workspaceContains:**/*.diff"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "patchManager",
+          "title": "Patches",
+          "icon": "$(diff)"
+        }
+      ]
+    },
+    "views": {
+      "patchManager": [
+        {
+          "id": "patchManager.patches",
+          "name": "Patches",
+          "icon": "$(diff)"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "patchManager.patches",
+        "contents": "No patch files found in this workspace.\n[Refresh](command:patchManager.refresh)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "patchManager.refresh",
+        "title": "Refresh",
+        "category": "Patch Manager",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "patchManager.openDiff",
+        "title": "Show Patched Diff",
+        "category": "Patch Manager",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "patchManager.openPatchFile",
+        "title": "Open Patch File",
+        "category": "Patch Manager",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "patchManager.openTargetFile",
+        "title": "Open Workspace File",
+        "category": "Patch Manager",
+        "icon": "$(file)"
+      },
+      {
+        "command": "patchManager.revealInExplorer",
+        "title": "Reveal in Explorer View",
+        "category": "Patch Manager"
+      },
+      {
+        "command": "patchManager.showFolderOnly",
+        "title": "Show Only Patches Folder",
+        "category": "Patch Manager",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "patchManager.showAll",
+        "title": "Show All Patch Files",
+        "category": "Patch Manager",
+        "icon": "$(filter-filled)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "patchManager.showFolderOnly",
+          "when": "view == patchManager.patches && !config.patchManager.folderOnly",
+          "group": "navigation@1"
+        },
+        {
+          "command": "patchManager.showAll",
+          "when": "view == patchManager.patches && config.patchManager.folderOnly",
+          "group": "navigation@1"
+        },
+        {
+          "command": "patchManager.refresh",
+          "when": "view == patchManager.patches",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "patchManager.openPatchFile",
+          "when": "view == patchManager.patches && viewItem == patchFile",
+          "group": "inline"
+        },
+        {
+          "command": "patchManager.openPatchFile",
+          "when": "view == patchManager.patches && viewItem =~ /^patch(File|Folder|edFile)$/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "patchManager.openDiff",
+          "when": "view == patchManager.patches && viewItem == patchedFile",
+          "group": "navigation@2"
+        },
+        {
+          "command": "patchManager.openTargetFile",
+          "when": "view == patchManager.patches && viewItem == patchedFile",
+          "group": "navigation@3"
+        },
+        {
+          "command": "patchManager.revealInExplorer",
+          "when": "view == patchManager.patches && viewItem =~ /^patch(File|edFile)$/",
+          "group": "navigation@4"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "patchManager.openDiff",
+          "when": "false"
+        },
+        {
+          "command": "patchManager.openPatchFile",
+          "when": "false"
+        },
+        {
+          "command": "patchManager.openTargetFile",
+          "when": "false"
+        },
+        {
+          "command": "patchManager.revealInExplorer",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Patch Manager",
+      "properties": {
+        "patchManager.include": {
+          "type": "string",
+          "default": "**/*.{patch,diff}",
+          "description": "Glob pattern (relative to each workspace folder) used to find patch files."
+        },
+        "patchManager.exclude": {
+          "type": "string",
+          "default": "**/{node_modules,.git}/**",
+          "description": "Glob pattern of files to exclude when searching for patch files."
+        },
+        "patchManager.patchesFolder": {
+          "type": "string",
+          "default": "patches",
+          "description": "Folder (relative to each workspace folder) scanned when 'folderOnly' is enabled."
+        },
+        "patchManager.folderOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only show patch files located inside 'patchManager.patchesFolder'."
+        },
+        "patchManager.fuzzFactor": {
+          "type": "integer",
+          "default": 2,
+          "minimum": 0,
+          "description": "Number of context lines allowed to mismatch when previewing a patch that no longer applies cleanly."
+        },
+        "patchManager.stripLevel": {
+          "type": [
+            "string",
+            "integer"
+          ],
+          "default": "auto",
+          "description": "Leading path components to strip from file names in patches (like 'patch -pN'). 'auto' strips git-style a/ and b/ prefixes."
+        },
+        "patchManager.baseDir": {
+          "type": "string",
+          "default": "",
+          "description": "Directory (relative to the workspace folder) that patch paths are resolved against. Empty means the workspace folder root."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && node esbuild.mjs",
+    "package": "npm run check-types && node esbuild.mjs --production",
+    "watch": "node esbuild.mjs --watch",
+    "check-types": "tsc --noEmit",
+    "compile-tests": "tsc -p tsconfig.test.json",
+    "test": "npm run compile-tests && mocha 'out/test/unit/**/*.test.js'",
+    "test:integration": "npm run compile && npm run compile-tests && vscode-test"
+  },
+  "dependencies": {
+    "diff": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "~1.90.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
+    "esbuild": "^0.28.2",
+    "mocha": "^11.0.0",
+    "typescript": "^5.6.0"
+  }
+}

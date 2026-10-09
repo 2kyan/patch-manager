@@ -1,0 +1,24 @@
+From 16833201b817817b5e92b066320d38adac0282a4 Mon Sep 17 00:00:00 2001
+From: Tester <t@t>
+Date: Wed, 7 Oct 2026 09:04:44 -0700
+Subject: [PATCH] Rename output
+
+---
+ src/app/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/app/main.c b/src/app/main.c
+index 5723769..b09a2df 100644
+--- a/src/app/main.c
++++ b/src/app/main.c
+@@ -5,6 +5,6 @@ int main(void)
+ {
+     int a = 1;
+     int b = 2;
+-    printf("SUM=%d\n", add(a, b));
++    printf("total=%d\n", add(a, b));
+     return 0;
+ }
+-- 
+2.53.0
+

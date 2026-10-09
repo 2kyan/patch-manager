@@ -1,0 +1,23 @@
+From 4e9559a94e5b97e26fe53cba84556989033b6e52 Mon Sep 17 00:00:00 2001
+From: Tester <t@t>
+Date: Wed, 7 Oct 2026 09:04:44 -0700
+Subject: [PATCH] Comment sub
+
+---
+ src/app/util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/app/util.c b/src/app/util.c
+index 0cf1052..68929c3 100644
+--- a/src/app/util.c
++++ b/src/app/util.c
+@@ -7,5 +7,5 @@ int add(int a, int b)
+ 
+ int sub(int a, int b)
+ {
+-    return a - b;
++    return a - b; // subtract
+ }
+-- 
+2.53.0
+

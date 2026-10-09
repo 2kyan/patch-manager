@@ -1,0 +1,56 @@
+From ea46412b55e3924559301682edc13016fb4d7b06 Mon Sep 17 00:00:00 2001
+From: Tester <t@t>
+Date: Wed, 7 Oct 2026 09:04:44 -0700
+Subject: [PATCH] Tune defaults and add guide
+
+---
+ docs/guide.md   | 3 +++
+ docs/old.md     | 1 -
+ lib/math/add.py | 1 +
+ src/app/main.c  | 2 +-
+ 4 files changed, 5 insertions(+), 2 deletions(-)
+ create mode 100644 docs/guide.md
+ delete mode 100644 docs/old.md
+
+diff --git a/docs/guide.md b/docs/guide.md
+new file mode 100644
+index 0000000..0171082
+--- /dev/null
++++ b/docs/guide.md
+@@ -0,0 +1,3 @@
++# Guide
++
++New guide.
+diff --git a/docs/old.md b/docs/old.md
+deleted file mode 100644
+index e9da5a2..0000000
+--- a/docs/old.md
++++ /dev/null
+@@ -1 +0,0 @@
+-old notes
+diff --git a/lib/math/add.py b/lib/math/add.py
+index 717f7ed..3f56779 100644
+--- a/lib/math/add.py
++++ b/lib/math/add.py
+@@ -3,4 +3,5 @@ def add(a, b):
+ 
+ 
+ def mul(a, b):
++    """Multiply."""
+     return a * b
+diff --git a/src/app/main.c b/src/app/main.c
+index 5723769..2635fcf 100644
+--- a/src/app/main.c
++++ b/src/app/main.c
+@@ -4,7 +4,7 @@
+ int main(void)
+ {
+     int a = 1;
+-    int b = 2;
++    int b = 40;
+     printf("sum=%d\n", add(a, b));
+     return 0;
+ }
+-- 
+2.53.0
+

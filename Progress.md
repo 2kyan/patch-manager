@@ -1,0 +1,56 @@
+# Progress Log
+
+- 2026-10-08 08:06:30-0700 — Bash: git add Progress.md && git commit -q -m "Update progress log  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" &
+- 2026-10-08 08:06:25-0700 — Bash: git ls-remote origin 2>&1 | head -3; echo "exit=$?"; git ls-remote https://github.com/2kyan/patch-manager 2>&1 | head -3
+- 2026-10-08 08:04:32-0700 — Bash: git ls-remote origin 2>&1 | head -5; git status --short | head
+- 2026-10-08 08:03:31-0700 — Bash: git -C ~ rev-parse --short HEAD; git -C ~ rev-parse --short origin/master
+- 2026-10-08 08:03:29-0700 — Bash: git -C ~ rev-parse --short HEAD origin/master; git -C ~ cat-file -t 48ea632 2>&1
+- 2026-10-08 08:03:22-0700 — Bash: git -C ~ remote set-url origin git@github-<alt-account>:<alt-account>/home && git -C ~ remote -v && GIT_SSH_COMMAN
+- 2026-10-08 08:02:04-0700 — Bash: git config --unset core.sshCommand; git -C ~ ls-remote --heads origin 2>&1 | head -3
+- 2026-10-08 08:01:56-0700 — Bash: cp -p ~/.ssh/config /tmp/claude-1000/-home-USER-src-patch-manager-extension/36460177-6796-4fb1-82be-24993362594b/scratc
+- 2026-10-08 08:01:50-0700 — Bash: sed -n 1,15p ~/.ssh/config; grep -n -i "^Host|^Match|^Include" ~/.ssh/config | head -30; ls -la ~/.ssh/config
+- 2026-10-08 08:00:47-0700 — Bash: git config core.sshCommand "ssh -i ~/.ssh/id_ed25519_github -o IdentitiesOnly=yes" && git ls-remote origin 2>&1 | head -
+- 2026-10-08 08:00:36-0700 — Bash: ssh-keygen -lf ~/.ssh/id_ed25519_github.pub; sed -n 60,80p ~/.ssh/config
+- 2026-10-08 08:00:32-0700 — Bash: S=/tmp/claude-1000/-home-USER-src-patch-manager-extension/36460177-6796-4fb1-82be-24993362594b/scratchpad; ssh-add -L |
+- 2026-10-08 08:00:23-0700 — Bash: ssh -vT -o BatchMode=yes -o ConnectTimeout=10 git@github.com 2>&1 | grep -E "Reading configuration|identity file|Offerin
+- 2026-10-08 07:59:35-0700 — Bash: git remote add origin git@github.com:2kyan/patch-manager.git && git remote -v && grep -n repository package.json && git 
+- 2026-10-08 07:58:56-0700 — Bash: git add -A && git status --short | wc -l && git commit -q -F - <<'EOF' Add Patch Manager VS Code extension (v0.1)  Brows
+- 2026-10-08 07:58:47-0700 — Bash: ssh -T -o BatchMode=yes -o ConnectTimeout=10 git@github.com 2>&1; git -C ~ remote -v | head -2
+- 2026-10-08 07:58:42-0700 — Bash: git config user.name; git config user.email; gh auth status 2>&1 | head -20; git status --short | head -30
+- 2026-10-08 07:38:22-0700 — Bash: cd /usr/share/code/resources/app/extensions && grep -rlE "url.parse(|burl).parse(|.parse)(" --include=*.js . 2>/dev/null
+- 2026-10-08 07:38:11-0700 — Bash: NODE_OPTIONS=--trace-deprecation npx vscode-test 2>&1 | grep -A12 "DEP0169" | grep -v AgentHost | head -20
+- 2026-10-08 07:38:06-0700 — Bash: node esbuild.mjs >/dev/null 2>&1; grep -c "url.parse|require("url")|from "url"" dist/extension.js; grep -rln "url.parse(
+- 2026-10-08 07:34:34-0700 — Bash: npx @vscode/vsce package 2>&1 | tail -1
+- 2026-10-08 07:34:20-0700 — Bash: cat > test/fixtures/workspace/patches/0004-Add-cxx-engine.patch <<'EOF' diff --git a/src/engine/core.cxx b/src/engine/co
+- 2026-10-08 07:34:04-0700 — Bash: python3 - <<'EOF' p='src/tree/decorations.ts' s=open(p).read() s=s.replace("export function folderItemUri(entry: PatchEn
+- 2026-10-08 07:33:55-0700 — Write: ~/src/patch-manager-extension/src/tree/decorations.ts
+- 2026-10-07 09:07:14-0700 — Bash: cd ~/src/patch-manager-extension/test/fixtures/workspace && cat PLAN.md; echo ---; cat Progress.md
+- 2026-10-07 09:07:01-0700 — Bash: ls -a test/fixtures/workspace; cat > README.md <<'EOF' # Patch Manager  Browse the patch files in your workspace and pre
+- 2026-10-07 09:06:38-0700 — Bash: cat > .vscode-test.mjs <<'EOF' import { defineConfig } from '@vscode/test-cli'; import { existsSync } from 'fs';  // Reu
+- 2026-10-07 09:06:19-0700 — Bash: echo "DISPLAY=$DISPLAY WAYLAND=$WAYLAND_DISPLAY"; readlink -f /usr/bin/code; which xvfb-run; ls /usr/share/code/code 2>/
+- 2026-10-07 09:06:13-0700 — Bash: python3 - <<'EOF' p='src/preview/applyEngine.ts' s=open(p).read() old="""  if (source === undefined) {     if (file.kind
+- 2026-10-07 09:06:03-0700 — Bash: npm test 2>&1 | grep -A15 "1) applyEngine" | tail -14
+- 2026-10-07 09:05:59-0700 — Bash: python3 - <<'EOF' p='src/preview/applyEngine.ts' s=open(p).read() old="""  const exact = tryApply(source, patch, 0);   i
+- 2026-10-07 09:05:44-0700 — Bash: python3 - <<'EOF' p='src/patchParser.ts' s=open(p).read() old="""export function parsePatchText(text: string, stripLevel
+- 2026-10-07 09:05:30-0700 — Bash: sed -n 12,30p test/fixtures/workspace/patches/0003-Rename-output.patch | cat -A
+- 2026-10-07 09:05:28-0700 — Bash: node -e ' const {parsePatchText}=require("./out/src/patchParser.js"); const {parsePatch}=require("diff"); const t=requir
+- 2026-10-07 09:05:19-0700 — Bash: npm test 2>&1 | grep -B2 -A12 "1) |2) |3) " | head -60; head -12 test/fixtures/workspace/patches/0003*; cat test/fixture
+- 2026-10-07 09:04:49-0700 — Bash: S=/tmp/claude-1000/-home-USER-src-patch-manager-extension/36460177-6796-4fb1-82be-24993362594b/scratchpad/gen; W=/home/
+- 2026-10-07 09:04:43-0700 — Bash: S=/tmp/claude-1000/-home-USER-src-patch-manager-extension/36460177-6796-4fb1-82be-24993362594b/scratchpad/gen; rm -rf $
+- 2026-10-07 09:04:28-0700 — Bash: node esbuild.mjs; ls -la dist
+- 2026-10-07 09:04:24-0700 — Bash: sed -i "s#import type { PatchStore } from '../patchStore';#import type { PatchEntry, PatchStore } from '../patchStore';#
+- 2026-10-07 09:04:02-0700 — Bash: cat > src/tree/nodes.ts <<'EOF' import type { FileDiff } from '../patchParser'; import type { PatchEntry } from '../patc
+- 2026-10-07 09:03:37-0700 — Bash: python3 - <<'EOF' p='src/patchStore.ts' s=open(p).read() old="""      // A patch file edited in an editor: re-read it on
+- 2026-10-07 09:03:27-0700 — Bash: cat > src/config.ts <<'EOF' import * as vscode from 'vscode'; import type { StripLevel } from './patchParser';  export c
+- 2026-10-07 09:02:55-0700 — Bash: python3 - <<'EOF' p='src/preview/applyEngine.ts' s=open(p).read() old="""  const fuzzy = fuzzFactor > 0 ? tryApply(sourc
+- 2026-10-07 09:02:45-0700 — Write: ~/src/patch-manager-extension/src/preview/applyEngine.ts
+- 2026-10-07 09:02:32-0700 — Write: ~/src/patch-manager-extension/src/tree/treeBuilder.ts
+- 2026-10-07 09:02:23-0700 — Write: ~/src/patch-manager-extension/src/patchParser.ts
+- 2026-10-07 09:02:06-0700 — Bash: cat > tsconfig.json <<'EOF' {   "compilerOptions": {     "module": "Node16",     "moduleResolution": "Node16",     "targ
+- 2026-10-07 09:01:24-0700 — Bash: grep -n "interface StructuredPatchb" -A 25 node_modules/diff/libcjs/types.d.ts; cat node_modules/diff/libcjs/patch/parse
+- 2026-10-07 09:01:16-0700 — Bash: npx esbuild --version; grep -n "applyPatch|fuzzFactor|compareLine|autoConvertLineEndings" node_modules/diff/libcjs/patch
+- 2026-10-07 09:01:06-0700 — Bash: mkdir -p ~/src/patch-manager-extension/{src/tree,src/preview,test/unit,test/suite,test/fixtures/workspace,.vsc
+- 2026-10-07 09:00:41-0700 — Bash: git -C ~ check-ignore -v src/patch-manager-extension/PLAN.md; git init -q -b main && npm view diff version && 
+- 2026-10-07 08:57:12-0700 — Write: ~/.claude.home/plans/i-want-to-creat-stateless-wren.md
+- 2026-10-07 08:44:05-0700 — Bash: cat PLAN.md; echo ---; cat Progress.md; code --version | head -1
+- 2026-10-07 08:44:01-0700 — Bash: ls -la && git log --oneline | head; find . -path ./.git -prune -o -type f -print | head -50; node --version; npm --versi
