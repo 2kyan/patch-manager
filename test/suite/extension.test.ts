@@ -92,6 +92,45 @@ suite('Patch Manager', () => {
     assert.strictEqual(fs.readFileSync(target.fsPath, 'utf8'), before);
   });
 
+  test('overlapping reloads leave a single set of watchers', async () => {
+    const { store } = await api();
+    await Promise.all([store.reload(), store.reload(), store.reload()]);
+    // One patch watcher and one file watcher per workspace folder.
+    assert.strictEqual(store['watchers'].length, 2 * vscode.workspace.workspaceFolders!.length);
+  });
+
+  test('badges an already-applied rename as applied', async () => {
+    const { tree, decorations, store } = await api();
+    const patch = vscode.Uri.joinPath(workspace, 'extra/rename.diff');
+    const renamed = vscode.Uri.joinPath(workspace, 'extra/renamed.txt');
+    fs.writeFileSync(
+      patch.fsPath,
+      [
+        'diff --git a/extra/original.txt b/extra/renamed.txt',
+        'similarity index 80%',
+        'rename from extra/original.txt',
+        'rename to extra/renamed.txt',
+        '--- a/extra/original.txt',
+        '+++ b/extra/renamed.txt',
+        '@@ -1,2 +1,2 @@',
+        ' a',
+        '-b',
+        '+c',
+        '',
+      ].join('\n'),
+    );
+    fs.writeFileSync(renamed.fsPath, 'a\nc\n');
+    try {
+      await store.reload();
+      const item = await tree.getTreeItem(await findFile(tree, 'rename.diff', 'extra/renamed.txt'));
+      assert.strictEqual((await decorations.provideFileDecoration(item.resourceUri!))?.badge, '✓');
+    } finally {
+      fs.rmSync(patch.fsPath, { force: true });
+      fs.rmSync(renamed.fsPath, { force: true });
+      await store.reload();
+    }
+  });
+
   test('folder-only mode restricts the list to the patches folder', async () => {
     const { tree, store } = await api();
     await vscode.workspace.getConfiguration('patchManager').update('folderOnly', true, vscode.ConfigurationTarget.Global);

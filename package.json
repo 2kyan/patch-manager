@@ -2,10 +2,13 @@
   "name": "patch-manager",
   "displayName": "Patch Manager",
   "description": "Browse patch files in the workspace as a tree and preview their changes as diffs without applying them.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "2kyan",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/2kyan/patch-manager" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2kyan/patch-manager"
+  },
   "engines": {
     "vscode": "^1.90.0"
   },

@@ -56,14 +56,23 @@ export function hunkTexts(patch: StructuredPatch): { oldText: string; newText: s
 /**
  * Compute the before/after text for one file of a patch, entirely in memory.
  * `source` is the current workspace content of the targeted file, or
- * undefined when that file does not exist.
+ * undefined when that file does not exist. For a rename, `source` is the
+ * old file and `renamed` the current content of the new one, if any.
  */
-export function computePreview(file: FileDiff, source: string | undefined, fuzzFactor: number): Preview {
+export function computePreview(file: FileDiff, source: string | undefined, fuzzFactor: number, renamed?: string): Preview {
   const patch = file.structured;
 
   if (file.kind === 'binary') {
     const text = 'Binary file — no textual preview.\n';
     return { status: 'binary', oldText: text, newText: text, note: 'binary file' };
+  }
+
+  // Once a rename is applied the old file is gone; judge it by the new file.
+  if (file.kind === 'rename' && source === undefined && renamed !== undefined) {
+    const original = patch.hunks.length === 0 ? renamed : tryApply(renamed, reversePatch(patch), 0);
+    if (original !== undefined) {
+      return { status: 'applied', oldText: original, newText: renamed, note: 'rename already applied' };
+    }
   }
 
   // Pure renames/copies/mode changes have no hunks: the content is unchanged.

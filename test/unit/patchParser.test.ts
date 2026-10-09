@@ -50,6 +50,43 @@ suite('patchParser', () => {
     ]);
   });
 
+  suite('mail signatures', () => {
+    const mail = (body: string[], signature?: string[]) =>
+      [
+        'From 16833201b817817b5e92b066320d38adac0282a4 Mon Sep 17 00:00:00 2001',
+        'From: Tester <t@t>',
+        'Subject: [PATCH] Edit',
+        '',
+        '---',
+        'diff --git a/f.txt b/f.txt',
+        '--- a/f.txt',
+        '+++ b/f.txt',
+        ...body,
+        ...(signature ? ['-- ', ...signature, ''] : []),
+        '',
+      ].join('\n');
+    const hunk = ['@@ -1,2 +1,2 @@', ' a', '-b', '+c'];
+    const lines = (text: string) => parsePatchText(text).files.map((f) => f.structured.hunks.map((h) => h.lines));
+
+    for (const signature of [['2.53.0'], ['2.39.5 (Apple Git-154)'], ['Custom', 'multi-line signature']]) {
+      test(`strips signature ${JSON.stringify(signature.join('\n'))}`, () => {
+        assert.strictEqual(parsePatchText(mail(hunk, signature)).error, undefined);
+        assert.deepStrictEqual(lines(mail(hunk, signature)), [[[' a', '-b', '+c']]]);
+      });
+    }
+
+    test('strips the signature of every mail in a --stdout stream', () => {
+      const text = mail(hunk, ['2.39.5 (Apple Git-154)']) + mail(hunk, ['2.39.5 (Apple Git-154)']);
+      assert.deepStrictEqual(lines(text), [[[' a', '-b', '+c']], [[' a', '-b', '+c']]]);
+    });
+
+    test('keeps a deleted "- " line at the end of the last hunk', () => {
+      const body = ['@@ -1,2 +1,1 @@', ' a', '-- '];
+      assert.deepStrictEqual(lines(mail(body)), [[[' a', '-- ']]]);
+      assert.deepStrictEqual(lines(mail(body, ['2.39.5 (Apple Git-154)'])), [[[' a', '-- ']]]);
+    });
+  });
+
   test('returns no files for text without a diff', () => {
     assert.deepStrictEqual(parsePatchText('just some notes\n').files, []);
   });

@@ -51,4 +51,37 @@ suite('applyEngine', () => {
     const [main] = parsePatchText(read('patches/0003-Rename-output.patch')).files;
     assert.strictEqual(computePreview(main, undefined, 2).status, 'hunksOnly');
   });
+
+  suite('renames', () => {
+    const rename = (hunk: string[]) =>
+      parsePatchText(
+        ['diff --git a/old.txt b/new.txt', 'similarity index 80%', 'rename from old.txt', 'rename to new.txt', ...hunk, ''].join('\n'),
+      ).files[0];
+    const edited = rename(['--- a/old.txt', '+++ b/new.txt', '@@ -1,2 +1,2 @@', ' a', '-b', '+c']);
+
+    test('applies to the old file while it exists', () => {
+      const preview = computePreview(edited, 'a\nb\n', 0, undefined);
+      assert.strictEqual(preview.status, 'clean');
+      assert.strictEqual(preview.newText, 'a\nc\n');
+    });
+
+    test('is detected as applied from the new file once the old one is gone', () => {
+      assert.deepStrictEqual(computePreview(edited, undefined, 0, 'a\nc\n'), {
+        status: 'applied',
+        oldText: 'a\nb\n',
+        newText: 'a\nc\n',
+        note: 'rename already applied',
+      });
+    });
+
+    test('a pure rename is applied when only the new file exists', () => {
+      const pure = rename([]);
+      assert.strictEqual(computePreview(pure, undefined, 0, 'x\n').status, 'applied');
+    });
+
+    test('an unrelated new file does not count as applied', () => {
+      assert.strictEqual(computePreview(edited, undefined, 0, 'other\n').status, 'hunksOnly');
+      assert.strictEqual(computePreview(edited, undefined, 0, undefined).status, 'hunksOnly');
+    });
+  });
 });
